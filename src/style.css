@@ -1,0 +1,162 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: system, -apple-system,
+      ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande";
+}
+
+button:focus {
+  outline: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+  color: rgb(44, 44, 44);
+}
+
+h1 {
+  font-weight: 300;
+  font-size: 3.5em;
+}
+
+h2 {
+  font-weight: 200;
+}
+
+.layout {
+  display: flex;
+  height: 100%;
+  align-items: stretch;
+}
+
+.layout__sidebar {
+  flex: 0 0 auto;
+  height: 100%;
+  background: #4b4b4b;
+}
+
+.layout__main {
+  flex: 1 1 auto;
+  height: 100%;
+}
+
+.empty {
+  display: none;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+.empty--is-visible {
+  display: flex;
+}
+
+.empty__action {
+  margin-top: 2rem;
+  color: rgb(180, 180, 180);
+}
+
+.account-views {
+  height: 100%;
+}
+
+.account-view {
+  height: 100%;
+  width: 100%;
+  display: none;
+}
+
+.account-view webview {
+  width: 100vw;
+  height: 100vh;
+}
+
+.account-view--is-visible {
+  display: block;
+}
+
+.account-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex: 1 1 auto;
+}
+
+.button {
+  width: 48px;
+  height: 48px;
+  margin: 10px;
+  border-radius: 50%;
+  border: 0;
+  font-size: 1.8rem;
+  color: #eee;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+}
+
+.button--add {
+  background: #0f9d58;
+}
+
+.button--remove {
+  background: #db4437;
+  align-self: flex-end;
+}
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  fill: #eee;
+}
+
+.list-item__toggle {
+  width: 48px;
+  height: 48px;
+  margin: 10px;
+  border-radius: 50%;
+  background: #232323;
+  color: #eee;
+  font-size: 1.4rem;
+  font-weight: 100;
+  opacity: 0.3;
+  border: 0;
+  cursor: pointer;
+  font-family: system, -apple-system,
+      ".SFNSDisplay-Regular", "Helvetica Neue", "Lucida Grande";
+}
+
+.list-item--selected .list-item__toggle {
+  opacity: 1;
+  cursor: default;
+}
+
+.account-1 {
+  background: #42A5F5;
+}
+
+.account-2 {
+  background: #FF4081;
+}
+
+.account-3 {
+  background: #00BCD4;
+}
+
+.account-4 {
+  background: #CDDC39;
+}
+
+.account-5 {
+  background: #E040FB;
+}
