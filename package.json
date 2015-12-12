@@ -1,12 +1,12 @@
 {
   "name": "inbox-client",
   "productName": "Inbox",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A desktop client for Google Inbox that supports multiple accounts.",
-  "main": "./src/index.js",
+  "main": "index.js",
   "scripts": {
-    "start": "electron ./src/index.js",
-    "build": "electron-packager . $npm_package_productName --out=dist --platform=darwin --arch=x64 icon=Icon.icns --ignore='^/dist$' --version=$npm_package_electronVersion --overwrite"
+    "start": "electron .",
+    "build": "electron-packager . $npm_package_productName --out=dist --platform=darwin --arch=x64 icon='./Inbox.icns' --ignore='^/dist$' --version=$npm_package_electronVersion --overwrite"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
   "engines": {
     "node": ">=4"
   },
-  "electronVersion": "0.35.0",
+  "electronVersion": "0.35.4",
   "devDependencies": {
     "electron-prebuilt": "^0.35.0",
     "electron-packager": "^5.1.1"

@@ -76,6 +76,7 @@ let checkForUpdates = function() {
   // `status` returns true if there is a new update available
   updater.check((err, status) => {
     if (!err && status) {
+      console.log(status);
       // Download the update
       updater.download()
     }
@@ -129,7 +130,7 @@ let setupMenu = function() {
       ]
     },
   ];
-  
+
   if (process.platform == 'darwin') {
     let name = require('electron').app.getName();
     applicationMenu.unshift({
@@ -183,9 +184,9 @@ let setupMenu = function() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 app.on('ready', function() {
-  db = new Datastore({ filename: app.getPath('appData') + '/accounts.json', autoload: true });
+  console.log(app.getVersion());
 
-  db.ensureIndex({ slug: 'slug', unique: true }, errorLog);
+  db = new Datastore({ filename: app.getPath('appData') + '/accounts.json', autoload: true });
 
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 1000, height: 800, darkTheme: true});
@@ -195,7 +196,7 @@ app.on('ready', function() {
   checkForUpdates();
 
   // and load the index.html of the app.
-  mainWindow.loadURL(`file://${__dirname}/index.html`);
+  mainWindow.loadURL(`file://${__dirname}/src/index.html`);
 
   // Open the DevTools.
   //mainWindow.webContents.openDevTools();
