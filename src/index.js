@@ -3,10 +3,20 @@
 const electron = require('electron');
 const app = electron.app;  // Module to control application life.
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
+const Menu = electron.Menu;  // Module to create native browser window.
 const ipc = electron.ipcMain;
 const Chance = require('chance');
 const Datastore = require('nedb');
 let chance = new Chance();
+
+const GhReleases = require('electron-gh-releases');
+
+let updaterOptions = {
+  repo: 'dfmcphee/inbox-client',
+  currentVersion: app.getVersion()
+}
+
+const updater = new GhReleases(updaterOptions);
 
 // Report crashes to our server.
 // electron.crashReporter.start();
@@ -61,6 +71,115 @@ app.on('window-all-closed', function() {
   }
 });
 
+let checkForUpdates = function() {
+  // Check for updates
+  // `status` returns true if there is a new update available
+  updater.check((err, status) => {
+    if (!err && status) {
+      // Download the update
+      updater.download()
+    }
+  });
+
+  // When an update has been downloaded
+  updater.on('update-downloaded', (info) => {
+    // Restart the app and install the update
+    updater.install()
+  });
+};
+
+let setupMenu = function() {
+  let applicationMenu = [
+    {
+      label: 'Edit',
+      submenu: [
+        {
+          label: 'Undo',
+          accelerator: 'CmdOrCtrl+Z',
+          role: 'undo'
+        },
+        {
+          label: 'Redo',
+          accelerator: 'Shift+CmdOrCtrl+Z',
+          role: 'redo'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Cut',
+          accelerator: 'CmdOrCtrl+X',
+          role: 'cut'
+        },
+        {
+          label: 'Copy',
+          accelerator: 'CmdOrCtrl+C',
+          role: 'copy'
+        },
+        {
+          label: 'Paste',
+          accelerator: 'CmdOrCtrl+V',
+          role: 'paste'
+        },
+        {
+          label: 'Select All',
+          accelerator: 'CmdOrCtrl+A',
+          role: 'selectall'
+        },
+      ]
+    },
+  ];
+  
+  if (process.platform == 'darwin') {
+    let name = require('electron').app.getName();
+    applicationMenu.unshift({
+      label: name,
+      submenu: [
+        {
+          label: 'About ' + name,
+          role: 'about'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Services',
+          role: 'services',
+          submenu: []
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Hide ' + name,
+          accelerator: 'Command+H',
+          role: 'hide'
+        },
+        {
+          label: 'Hide Others',
+          accelerator: 'Command+Shift+H',
+          role: 'hideothers'
+        },
+        {
+          label: 'Show All',
+          role: 'unhide'
+        },
+        {
+          type: 'separator'
+        },
+        {
+          label: 'Quit',
+          accelerator: 'Command+Q',
+          click: function() { app.quit(); }
+        },
+      ]
+    });
+  }
+
+  let menu = Menu.buildFromTemplate(applicationMenu);
+  Menu.setApplicationMenu(menu);
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 app.on('ready', function() {
@@ -70,6 +189,10 @@ app.on('ready', function() {
 
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 1000, height: 800, darkTheme: true});
+
+  setupMenu();
+
+  checkForUpdates();
 
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/index.html`);

@@ -142,21 +142,29 @@ h2 {
 }
 
 .account-1 {
-  background: #42A5F5;
+  background-color: #42A5F5;
 }
 
 .account-2 {
-  background: #FF4081;
+  background-color: #EF5350;
 }
 
 .account-3 {
-  background: #00BCD4;
+  background-color: #00BCD4;
 }
 
 .account-4 {
-  background: #CDDC39;
+  background-color: #CDDC39;
 }
 
 .account-5 {
-  background: #E040FB;
+  background-color: #E040FB;
+}
+
+.account-6 {
+  background-color: #26A69A;
+}
+
+.account-7 {
+  background-color: #FF4081;
 }
