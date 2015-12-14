@@ -1,7 +1,7 @@
 {
   "name": "inbox-client",
   "productName": "Inbox",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A desktop client for Google Inbox that supports multiple accounts.",
   "main": "index.js",
   "scripts": {

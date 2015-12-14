@@ -5,6 +5,7 @@ const app = electron.app;  // Module to control application life.
 const BrowserWindow = electron.BrowserWindow;  // Module to create native browser window.
 const Menu = electron.Menu;  // Module to create native browser window.
 const ipc = electron.ipcMain;
+const dialog = electron.dialog;
 const Chance = require('chance');
 const Datastore = require('nedb');
 let chance = new Chance();
@@ -37,11 +38,17 @@ let checkForUpdates = function() {
   // `status` returns true if there is a new update available
   updater.check((err, status) => {
     if (!err && status) {
-      console.log(status);
-      // Download the update
-      if (confirm("An update is available. Do you want to download it?")) {
-        updater.download();
-      }
+      // Ask to download the update
+      dialog.showMessageBox({
+        type: 'question',
+        message: 'An update is available. Do you want to download and install it now?',
+        detail: 'Inbox will be restarted when to complete the update process.',
+        buttons: ['Ok']
+      }, function(result) {
+        if (result) {
+          updater.download();
+        }
+      });
     }
   });
 
