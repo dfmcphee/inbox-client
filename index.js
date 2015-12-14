@@ -32,45 +32,6 @@ let errorLog = function (err) {
   }
 }
 
-ipc.on('connect', function(evt, message) {
-  db.find({}).sort({ createdAt: 1 }).exec(function (err, accounts) {
-    evt.sender.send('accounts-loaded', accounts);
-  });
-});
-
-ipc.on('triggerResize', function(evt) {
-  mainWindow.emit('resize');
-});
-
-ipc.on('add-account', function(evt, message) {
-  var slug = chance.string();
-  var dateCreated = new Date();
-  var doc = {
-    slug: slug,
-    partition: 'persist:' + slug,
-    createdAt: dateCreated
-  };
-
-  db.insert(doc, function (err, newAccount) {
-    evt.sender.send('account-created', newAccount);
-  });
-});
-
-ipc.on('remove-account', function(evt, slug) {
-  db.remove({ slug: slug }, {}, function (err, numRemoved) {
-    evt.sender.send('account-removed', slug);
-  });
-});
-
-// Quit when all windows are closed.
-app.on('window-all-closed', function() {
-  // On OS X it is common for applications and their menu bar
-  // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform != 'darwin') {
-    app.quit();
-  }
-});
-
 let checkForUpdates = function() {
   // Check for updates
   // `status` returns true if there is a new update available
@@ -78,7 +39,9 @@ let checkForUpdates = function() {
     if (!err && status) {
       console.log(status);
       // Download the update
-      updater.download()
+      if (confirm("An update is available. Do you want to download it?")) {
+        updater.download();
+      }
     }
   });
 
@@ -181,25 +144,71 @@ let setupMenu = function() {
   Menu.setApplicationMenu(menu);
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-app.on('ready', function() {
-  console.log(app.getVersion());
-
-  db = new Datastore({ filename: app.getPath('appData') + '/accounts.json', autoload: true });
-
+let createWindow = function() {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 1000, height: 800, darkTheme: true});
-
-  setupMenu();
-
-  checkForUpdates();
-
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/src/index.html`);
 
   // Open the DevTools.
-  //mainWindow.webContents.openDevTools();
+  mainWindow.webContents.openDevTools();
+}
+
+ipc.on('connect', function(evt, message) {
+  db.find({}).sort({ createdAt: 1 }).exec(function (err, accounts) {
+    evt.sender.send('accounts-loaded', accounts);
+  });
+});
+
+let increaseWindowSize = true;
+
+ipc.on('trigger-resize', function(evt, accountId) {
+  let size = mainWindow.getSize();
+  let width = size[0];
+  let height = size[1];
+
+  mainWindow.setSize(width, height + 1);
+  mainWindow.setSize(width, height - 1);
+});
+
+ipc.on('add-account', function(evt, message) {
+  var slug = chance.string();
+  var dateCreated = new Date();
+  var doc = {
+    slug: slug,
+    partition: 'persist:' + slug,
+    createdAt: dateCreated
+  };
+
+  db.insert(doc, function (err, newAccount) {
+    evt.sender.send('account-created', newAccount);
+  });
+});
+
+ipc.on('remove-account', function(evt, slug) {
+  db.remove({ slug: slug }, {}, function (err, numRemoved) {
+    evt.sender.send('account-removed', slug);
+  });
+});
+
+// Quit when all windows are closed.
+app.on('window-all-closed', function() {
+  // On OS X it is common for applications and their menu bar
+  // to stay active until the user quits explicitly with Cmd + Q
+  if (process.platform != 'darwin') {
+    app.quit();
+  }
+});
+
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+app.on('ready', function() {
+  console.log(app.getVersion());
+  db = new Datastore({ filename: app.getPath('appData') + '/accounts.json', autoload: true });
+
+  setupMenu();
+  checkForUpdates();
+  createWindow();
 
   mainWindow.webContents.on('new-window', function(evt, url) {
     evt.preventDefault();
@@ -213,4 +222,10 @@ app.on('ready', function() {
     // when you should delete the corresponding element.
     mainWindow = null;
   });
+});
+
+app.on('activate', function() {
+  if (!mainWindow) {
+    createWindow();
+  }
 });

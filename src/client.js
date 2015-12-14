@@ -51,10 +51,7 @@ let showAccount = function(accountId) {
 
   let accountView = document.getElementById(accountId);
   accountView.classList.add('account-view--is-visible');
-  console.log(accounts[accountId]);
-  accounts[accountId].send('account-shown');
-
-  ipc.send('triggerResize');
+  ipc.send('trigger-resize', accountId);
 };
 
 let addAccountListItem = function(account, index) {
@@ -80,7 +77,7 @@ let addAccountView = function(account) {
   webview.setAttribute('minwidth', '400px');
   webview.setAttribute('minheight', '300px');
   webview.setAttribute('allowpopups', 'on');
-  webview.setAttribute('preload', './webview.js');
+  webview.setAttribute('autosize', 'on');
   webview.setAttribute('partition', account.partition);
 
   webview.addEventListener("dom-ready", function(){
