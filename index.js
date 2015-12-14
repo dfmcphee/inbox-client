@@ -151,7 +151,7 @@ let createWindow = function() {
   mainWindow.loadURL(`file://${__dirname}/src/index.html`);
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  // mainWindow.webContents.openDevTools();
 }
 
 ipc.on('connect', function(evt, message) {
